@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0e7490">
+<title>Сицілія + Венеція</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+  :root{
+    --sea:#0e7490; --sea-d:#0b5566; --sea-l:#22a6bf;
+    --sand:#f4e4c8; --sand-d:#e6cfa3; --sand-bg:#fbf5ea;
+    --ink:#12333b; --muted:#5f7a82;
+    --card:#ffffff; --line:#dce9ec;
+    --ok:#1f9d63; --ok-bg:#e6f6ee;
+    --warn:#c67b1e; --warn-bg:#fdf1df;
+    --done:#0e7490;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:var(--sand-bg); color:var(--ink);
+    font-size:15px; line-height:1.5;
+    padding-bottom:76px;
+    -webkit-text-size-adjust:100%;
+  }
+  .top{
+    background:linear-gradient(135deg,var(--sea) 0%,var(--sea-l) 100%);
+    color:#fff; padding:calc(env(safe-area-inset-top) + 16px) 18px 16px;
+    position:sticky; top:0; z-index:10;
+    box-shadow:0 2px 10px rgba(14,116,144,.25);
+  }
+  .top h1{margin:0;font-size:19px;font-weight:700;letter-spacing:.2px;}
+  .top .dates{margin:2px 0 0;font-size:12.5px;opacity:.9;}
+  .wrap{padding:14px 14px 0;}
+  .tab{display:none;}
+  .tab.on{display:block;animation:f .2s ease;}
+  @keyframes f{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--sea-d);
+     margin:18px 0 8px;font-weight:700;}
+  h2:first-child{margin-top:2px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+        padding:13px 15px;margin-bottom:10px;box-shadow:0 1px 3px rgba(18,51,59,.05);}
+  .card.hl{border-left:4px solid var(--sea);}
+  .row{display:flex;align-items:flex-start;gap:11px;}
+  .row+.row{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);}
+  .dot{flex:0 0 30px;height:30px;border-radius:50%;background:var(--sea);color:#fff;
+       display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+  .dot.sand{background:var(--sand-d);color:var(--ink);}
+  .bd{flex:1;min-width:0;}
+  .bd .t{font-weight:650;font-size:14.5px;}
+  .bd .d{color:var(--muted);font-size:13px;margin-top:2px;}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;
+       margin:3px 5px 0 0;vertical-align:middle;}
+  .tag.ok{background:var(--ok-bg);color:var(--ok);}
+  .tag.warn{background:var(--warn-bg);color:var(--warn);}
+  .tag.done{background:#e2f1f5;color:var(--done);}
+  .tag.todo{background:var(--sand);color:#8a6a2b;}
+  .stat{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px;}
+  .stat:last-child{border-bottom:none;}
+  .stat .v{font-weight:700;}
+  .stat.big{font-size:16px;padding:12px 0;}
+  .stat.big .v{color:var(--sea-d);font-size:18px;}
+  .good{background:var(--ok-bg);border-radius:10px;padding:10px 13px;margin-top:6px;
+        color:var(--ok);font-weight:650;display:flex;justify-content:space-between;}
+  .warnbox{background:var(--warn-bg);border:1px solid #f0d9b0;border-radius:12px;
+           padding:12px 14px;margin-top:10px;font-size:13.5px;color:#7a531a;}
+  .warnbox b{color:var(--warn);}
+  .note{font-size:12.5px;color:var(--muted);margin:6px 2px 0;line-height:1.45;}
+  ul.clean{margin:6px 0 0;padding-left:18px;}
+  ul.clean li{margin-bottom:5px;font-size:13.5px;}
+  .pill{display:inline-flex;align-items:center;gap:5px;background:#e2f1f5;color:var(--sea-d);
+        font-size:12px;font-weight:650;padding:4px 10px;border-radius:20px;margin:0 5px 5px 0;}
+  .nav{position:fixed;bottom:0;left:0;right:0;display:flex;
+       background:#fff;border-top:1px solid var(--line);
+       padding-bottom:env(safe-area-inset-bottom);z-index:20;
+       box-shadow:0 -2px 12px rgba(18,51,59,.08);}
+  .nav button{flex:1;border:none;background:none;padding:9px 0 8px;font-size:11px;
+              color:var(--muted);font-weight:600;display:flex;flex-direction:column;
+              align-items:center;gap:3px;cursor:pointer;font-family:inherit;}
+  .nav button .ic{font-size:20px;line-height:1;}
+  .nav button.on{color:var(--sea);}
+  .seg{font-size:12px;color:var(--muted);margin-top:3px;}
+              border-radius:14px;padding:15px 17px;margin-bottom:12px;}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>Сицілія + Венеція</h1>
+  <p class="dates">17 вересня – 1 жовтня 2026 · на двох · без авто</p>
+</div>
+
+<!-- ОГЛЯД -->
+<div class="tab on" id="tab-over">
+<div class="wrap">
+  <h2>Коротко про поїздку</h2>
+  <div class="card hl">
+    <div style="font-size:14px;">
+      <span class="pill">🚆 Київ→Кишинів</span>
+      <span class="pill">✈️ →Катанія</span>
+      <span class="pill">🏖️ Сіракузи ×10</span>
+      <span class="pill">✈️ →Венеція ×2</span>
+      <span class="pill">✈️ →Кишинів→Київ</span>
+    </div>
+    <p class="note">База — CASA LUKÌA, Сіракузи (Борґата / Санта-Лючія). Звідти надійні одноденні виїзди потягом. Фінал — 2 дні у Венеції.</p>
+  </div>
+
+  <h2>Ключові дати</h2>
+  <div class="card">
+    <div class="stat"><span>17.09 · потяг у Кишинів</span><span class="v"><span class="tag done">ok</span></span></div>
+    <div class="stat"><span>18.09 · Кишинів→Катанія (Wizz)</span><span class="v"><span class="tag done">ok</span></span></div>
+    <div class="stat"><span>18–28.09 · Сіракузи, 10 ночей</span><span class="v"><span class="tag done">ok</span></span></div>
+    <div class="stat"><span>28.09 · Катанія→Венеція</span><span class="v"><span class="tag done">ok</span></span></div>
+    <div class="stat"><span>28–30.09 · Венеція, 2 ночі</span><span class="v"><span class="tag done">ok</span></span></div>
+    <div class="stat"><span>30.09 · Венеція→Кишинів</span><span class="v"><span class="tag done">ok</span></span></div>
+    <div class="stat"><span>01.10 · Кишинів→Київ</span><span class="v"><span class="tag todo">купити</span></span></div>
+  </div>
+
+  <h2>Що ще лишилось зробити</h2>
+  <div class="card">
+    <ul class="clean">
+      <li><b>Готель Кишинів</b>, ніч 17→18.09 (ближче до аеропорту).</li>
+      <li><b>Готель Кишинів</b>, ніч 01.10 — з нічним заселенням (приліт 00:25).</li>
+      <li><b>Квиток Кишинів→Київ</b> на 01.10, пізній ранок/день.</li>
+      <li>Написати Aurore час прибуття 18.09 (~17:00) для заселення.</li>
+    </ul>
+  </div>
+
+  <div class="warnbox">
+    <b>Головний ризик — Етна.</b> Наприкінці вересня вулкан може підняти код і на кілька годин закрити аеропорт Катанії через попіл. Не бери жодних жорстких стикувань впритул; перед вильотом додому — ніч у місті, не пересадка «з коліс».
+  </div>
+</div>
+</div>
+
+<!-- МАРШРУТ -->
+<div class="tab" id="tab-route">
+<div class="wrap">
+  <h2>Дорога туди</h2>
+  <div class="card">
+    <div class="row"><div class="dot">1</div><div class="bd">
+      <div class="t">17.09 · Київ → Кишинів</div>
+      <div class="d">Потяг, прибуття 10:04. Ніч у Кишиневі перед вильотом.</div>
+      <span class="tag done">заброньовано</span><span class="tag todo">готель ще ні</span>
+    </div></div>
+    <div class="row"><div class="dot">2</div><div class="bd">
+      <div class="t">18.09 · Кишинів → Катанія</div>
+      <div class="d">Wizz, 2 окремі квитки: 07:50 →Бухарест (AQ…), 13:40 Бухарест→Катанія (J…). Прибуття ~15:05. Пересадка ~4 год.</div>
+      <span class="tag done">заброньовано</span><span class="tag warn">окремі квитки</span>
+    </div></div>
+    <div class="row"><div class="dot sand">☀</div><div class="bd">
+      <div class="t">→ Сіракузи</div>
+      <div class="d">Потяг Катанія→Сіракузи ~1 год 15 хв. Заселення ~17:00.</div>
+    </div></div>
+  </div>
+
+  <h2>База · Сицілія 18–28.09</h2>
+  <div class="card hl">
+    <div class="t" style="font-weight:700;">CASA LUKÌA · Борґата (Санта-Лючія)</div>
+    <ul class="clean">
+      <li>До Ортіджі ~15 хв пішки рівною дорогою; до вокзалу ~20–25 хв.</li>
+      <li>Заселення за домовленістю — написати Aurore час заздалегідь.</li>
+      <li>Кондиціонер від електронного ключа; провітрювати після душу.</li>
+      <li>Виїзд 28.09: камера схову в Ортіджі €4.5/сумка за потреби.</li>
+    </ul>
+  </div>
+
+  <h2>Дорога назад</h2>
+  <div class="card">
+    <div class="row"><div class="dot">4</div><div class="bd">
+      <div class="t">28.09 · Катанія → Венеція</div>
+      <div class="d">Wizz, 13:40–15:30 · €215. Виїзд із Сіракуз ~9:30–10:00, в аеропорту ~11:40.</div>
+      <span class="tag done">заброньовано</span>
+    </div></div>
+    <div class="row"><div class="dot sand">🚤</div><div class="bd">
+      <div class="t">28–30.09 · Венеція</div>
+      <div class="d">Каннареджо, 2 ночі. З аеропорту — Alilaguna/вапоретто.</div>
+      <span class="tag done">житло заброньовано</span>
+    </div></div>
+    <div class="row"><div class="dot">6</div><div class="bd">
+      <div class="t">30.09 · Венеція → Кишинів</div>
+      <div class="d">Wizz, 21:15 → приліт 00:25 (вже 01.10) · €220. Готель біля аеропорту з нічним заселенням.</div>
+      <span class="tag done">заброньовано</span><span class="tag warn">приліт 00:25</span><span class="tag todo">готель ще ні</span>
+    </div></div>
+    <div class="row"><div class="dot">7</div><div class="bd">
+      <div class="t">01.10 · Кишинів → Київ</div>
+      <div class="d">Потяг/автобус. Виїзд не раніше пізнього ранку — після нічного прильоту.</div>
+      <span class="tag todo">купити</span>
+    </div></div>
+  </div>
+
+  <div class="warnbox">
+    <b>Багаж (усі рейси Wizz):</b> на кожного валіза в салон 10 кг + сумка під сидіння. Онлайн-чекін включений. Валіза для полиці до 55×40×23 см — на гейті міряють рамкою, звірити габарити. Усе ручне, здавати в трюм не треба.
+  </div>
+</div>
+</div>
+
+<!-- ВИЇЗДИ -->
+<div class="tab" id="tab-trips">
+<div class="wrap">
+  <h2>Надійні одноденні виїзди</h2>
+  <p class="note">Магістральна лінія Мессіна–Сіракузи. Час і кількість рейсів — орієнтовні, звіряти на trenitalia.com на дату.</p>
+
+  <div class="card">
+    <div class="t" style="font-weight:700;">🏛️ Катанія</div>
+    <div class="seg">Потяг ~1 год · ~15 рейсів/день · прямий</div>
+    <p class="note">Рибний ринок La Pescheria, собор, вид на Етну. Тут же аеропорт вильоту 28.09.</p>
+  </div>
+
+  <div class="card">
+    <div class="t" style="font-weight:700;">⛪ Ното</div>
+    <div class="seg">Потяг 32 хв · 8 рейсів/день · прямий</div>
+    <p class="note">Столиця сицилійського бароко — золотий пісковик, головна вулиця Корсо. Ідеально під вечерю на виїзді.</p>
+  </div>
+
+  <div class="card">
+    <div class="t" style="font-weight:700;">🏖️ Fontane Bianche</div>
+    <div class="seg">Потяг 13 хв · 8 рейсів/день</div>
+    <p class="note">Найближчий піщаний пляж. 4 пляжні дні заплановано; lido (лежаки+парасоля) ~€20/день. Головний пляжний ресурс поїздки.</p>
+  </div>
+
+  <h2>Опційно · за бажанням</h2>
+  <div class="card">
+    <div class="t" style="font-weight:700;">🐟 Vendicari + Marzamemi</div>
+    <div class="seg">Поїзд до Ното + таксі · ~€140 на двох за день</div>
+    <p class="note">Заповідник із дикими пляжами + рибальське містечко з морепродуктами. Без авто складно — таксі від Ното або сезонний автобус AST. Перевірити транспорт на дату.</p>
+  </div>
+  <div class="card">
+    <div class="t" style="font-weight:700;">🌋 Етна</div>
+    <div class="seg">Потяг+автобус до Rifugio Sapienza, або джип-тур з гідом</div>
+    <p class="note">Самостійно — дешево; джип-тур €80–160 на двох. При активному виверженні доступ до кратерів обмежують.</p>
+  </div>
+</div>
+</div>
+
+<div class="nav">
+  <button class="on" data-t="over"><span class="ic">🧭</span>Огляд</button>
+  <button data-t="route"><span class="ic">🗺️</span>Маршрут</button>
+  <button data-t="trips"><span class="ic">🚆</span>Виїзди</button>
+</div>
+
+<script>
+  var btns=document.querySelectorAll('.nav button');
+  var tabs=document.querySelectorAll('.tab');
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){
+      btns.forEach(function(x){x.classList.remove('on');});
+      tabs.forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on');
+      document.getElementById('tab-'+b.dataset.t).classList.add('on');
+      window.scrollTo(0,0);
+    });
+  });
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('sw.js').catch(function(){});
+    });
+  }
+</script>
+</body>
+</html>
